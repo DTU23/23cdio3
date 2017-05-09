@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>CDIO 2.3</title>
     <!-- Materialize CSS -->
@@ -10,9 +11,9 @@
     <script src="js/mustache.js" type="text/javascript"></script>
     <!-- Mustache Templates -->
     <script type="text/html" id="userEditTemplate">
-        <div class="row" data-source-id="{{id}}">
+        <div class="row" data-source-id="{{oprId}}">
             <div class="input-field col s6">
-                <input id="user_id" type="text" class="validate" value="{{id}}" data-length="10">
+                <input id="user_id" type="text" class="validate" value="{{oprId}}" data-length="10" disabled>
                 <label for="user_id" class="active" data-error="User ID must be provided!" data-length="10">User ID</label>
             </div>
             <div class="input-field col s6">
@@ -20,7 +21,7 @@
                 <label for="user_ini" class="active">User Initials</label>
             </div>
             <div class="input-field col s12">
-                <input id="user_name" type="text" class="validate" value="{{name}}">
+                <input id="user_name" type="text" class="validate" value="{{oprName}}">
                 <label for="user_name" class="active">Name</label>
             </div>
             <div class="input-field col s12">
@@ -51,9 +52,9 @@
 
     <script type="text/html" id="userTableRow">
         <!--{{#users}}-->
-        <tr id="user-row-{{id}}">
-            <td class="id">{{id}}</td>
-            <td class="name">{{name}}</td>
+        <tr id="user-row-{{oprId}}">
+            <td class="id">{{oprId}}</td>
+            <td class="name">{{oprName}}</td>
             <td class="ini">{{ini}}</td>
             <td class="cpr">{{cpr}}</td>
             <td>
@@ -77,6 +78,7 @@
     </script>
 </head>
 <body>
+
 <nav class="blue-grey darken-3">
     <div class="nav-wrapper container">
         <a href="#" class="brand-logo">DTU Gruppe 23</a>
@@ -195,8 +197,6 @@
         </div>
     </div>
 </footer>
-
-<link rel="stylesheet" href="css/tether-theme-basic.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- Materialize JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
