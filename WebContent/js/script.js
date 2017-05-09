@@ -24,33 +24,23 @@ $(document).ready(function () {
             "admin": row.children().find(".admin").is(':checked'),
             "role": row.children(".role").text()
         });
-        console.log({
-            "oprId": row.children(".id").text(),
-            "oprName":row.children(".name").text(),
-            "ini": row.children(".ini").text(),
-            "cpr": row.children(".cpr").text(),
-            "admin": row.children().find(".admin").is(':checked'),
-            "role": row.children(".role").text()
-        });
-        $('#userEdit').html(rendered).promise().done(function () {
+        $('#userEditModal').html(rendered).promise().done(function () {
             var select_box = $('#userEditModal').find('#user_role');
             var option = 'option[value='+select_box.attr('data-selected')+']';
             select_box.find(option).attr("selected", true);
-            console.log(option);
             $('select').material_select();
             $('#userEditModal').modal('open');
         });
     });
 
     $(document).on("click", '.add-user', function (e) {
-        template = $('#userEditTemplate').html();
+        template = $('#userInsertTemplate').html();
         Mustache.parse(template);   // optional, speeds up future uses
         var rendered = Mustache.render(template, {"role": "None", "admin": false});
-        $('#userEdit').html(rendered).promise().done(function () {
+        $('#userEditModal').html(rendered).promise().done(function () {
             var select_box = $('#userEditModal').find('#user_role');
             var option = 'option[value='+select_box.attr('data-selected')+']';
             select_box.find(option).attr("selected", true);
-            console.log(option);
             $('select').material_select();
         });
         $('#userEditModal').modal('open');
@@ -82,7 +72,6 @@ $(document).ready(function () {
     });
     
     $(document).on('click', '.dropdown-item', function (e) {
-        console.log($(this).text());
         $(this).parent().parent().parent().find('a.dropdown-button').html($(this).text());
     });
 
@@ -118,6 +107,12 @@ $(document).ready(function () {
     $(document).on('click', '.modal-save', function (e) {
         e.preventDefault();
         $('#userEditModal').find('.preloader-wrapper').removeClass('hide');
+        var role;
+        if($('#userEdit').find("#user_role").find('li.active.selected').text() === ''){
+            role = $('#userEdit').find('input.select-dropdown').attr('value');
+        }else{
+            role = $('#userEdit').find("#user_role").find('li.active.selected').text()
+        }
         $.ajax({
             type: "PUT",
             contentType: "application/json",
@@ -127,14 +122,48 @@ $(document).ready(function () {
                 "oprName": $('#userEdit').find("#user_name").val(),
                 "ini": $('#userEdit').find("#user_ini").val(),
                 "cpr": $('#userEdit').find("#user_cpr").val(),
-                "admin": $('#userEdit').find().find(".admin").is(':checked'),
-                "role": $('#userEdit').find("#user_role").text()
+                "admin": $('#userEdit').find("#user_admin").is(':checked'),
+                "role": role
             }),
             url: "./api/v1/operator/",
             success: function( msg ) {
                 console.log("Response: " + msg);
                 populate();
-                $('#usereditmodal').modal('close');
+                $('#userEditModal').modal('close');
+            },
+            error: function ( msg ) {
+                Materialize.toast("Unable to update user!", 4000);
+                $('#userEditModal').modal('close');
+            }
+        });
+    });
+
+    $(document).on('click', '.modal-add', function (e) {
+        e.preventDefault();
+        $('#userEditModal').find('.preloader-wrapper').removeClass('hide');
+        var role;
+        if($('#userAdd').find("#user_role").find('li.active.selected').text() === ''){
+            role = $('#userAdd').find('input.select-dropdown').attr('value');
+        }else{
+            role = $('#userAdd').find("#user_role").find('li.active.selected').text()
+        }
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            processData: false,
+            data: JSON.stringify({
+                "oprId": $('#userAdd').find("#user_id").val(),
+                "oprName": $('#userAdd').find("#user_name").val(),
+                "ini": $('#userAdd').find("#user_ini").val(),
+                "cpr": $('#userAdd').find("#user_cpr").val(),
+                "admin": $('#userAdd').find("#user_admin").is(':checked'),
+                "role": role
+            }),
+            url: "./api/v1/operator/",
+            success: function( msg ) {
+                console.log("Response: " + msg);
+                populate();
+                $('#userEditModal').modal('close');
             },
             error: function ( msg ) {
                 Materialize.toast("Unable to update user!", 4000);
